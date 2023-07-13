@@ -1,0 +1,212 @@
+//generate parenthesis
+#include<bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    void solve(string op, int open, int close, vector<string> &ans){
+        if(open == 0 && close == 0){
+            ans.push_back(op);
+            return;
+        }
+        //when count of open and close brackets are same then 
+        //we have only one choice to put open bracket 
+        if(open == close){
+            string op1 = op;
+            op1.push_back('(');
+            solve(op1, open-1, close, ans);
+        }
+        else if(open == 0){
+            //only choice is to put close brackets 
+            string op1 = op;
+            op1.push_back(')');
+            solve(op1, open, close-1, ans);
+        }
+        else if(close == 0){
+            //only choise is to use open bracket 
+            string op1 = op;
+            op1.push_back('(');
+            solve(op1, open-1, close, ans);
+        }
+        else{
+            string op1 = op;
+            string op2 = op;
+            op1.push_back('(');
+            op2.push_back(')');
+            solve(op1, open-1, close, ans);
+            solve(op2, open, close-1, ans);
+        }
+    }
+    vector<string> generateParenthesis(int n) {
+        int open = n;
+        int close = n;
+        vector<string> ans;
+        string op = "";
+        solve(op, open, close, ans);
+        return ans;
+    }
+};
+
+int main(){
+    
+    return 0;
+}
+
+
+//Letter Combination
+#include<bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    void solve(string digits, string output, int index, vector<string> &ans, string mapping[])
+    {
+        // base case
+        if(index >= digits.length())
+        {
+            ans.push_back(output);
+            return;
+        }
+        
+        int number = digits[index] - '0';
+        string value = mapping[number];
+        
+        for(int i=0; i<value.length(); i++)
+        {
+            output.push_back(value[i]);
+            solve(digits, output, index+1, ans, mapping);
+            output.pop_back();
+        }
+    }
+    vector<string> letterCombinations(string digits) {
+        vector<string> ans;
+        
+        if(digits.length() == 0)
+        {
+            return ans;
+        }
+        
+        string output = "";
+        int index = 0;
+        
+        string mapping[10] = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        
+        solve(digits, output, index, ans, mapping);
+        return ans;
+    }
+};
+
+//permutation
+#include<bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    void solve(vector<int> nums, vector<vector<int>> &ans, int index)
+    {
+        if(index >= nums.size())
+        {
+            ans.push_back(nums);
+            return;
+        }
+
+        for(int i=index; i<nums.size(); i++)
+        {
+            swap(nums[index], nums[i]);
+            solve(nums, ans, index+1);
+            swap(nums[index], nums[i]);
+        }
+    }
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> ans;
+        solve(nums, ans, 0);
+        return ans;
+    }
+};
+
+//power
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<vector<int>> power(vector<int>& nums){
+        vector<vector<int>> TotalSubsets;
+        int n=nums.size();
+        for(int num=0;num<=pow(2,n)-1;num++){
+            vector<int> sub;
+            for(int i=0;i<=n-1;i++){
+                if(num&(1<<i)){
+                    sub.push_back(nums[i]);
+                }
+            }
+            TotalSubsets.push_back(sub);
+        }
+        return TotalSubsets;
+    }
+
+//RatinMaze
+#include <bits/stdc++.h>
+
+using namespace std;
+
+class Solution {
+  void findPathHelper(int i, int j, vector < vector < int >> & a, int n, vector < string > & ans, string move,
+    vector < vector < int >> & vis) {
+    if (i == n - 1 && j == n - 1) {
+      ans.push_back(move);
+      return;
+    }
+
+    // downward
+    if (i + 1 < n && !vis[i + 1][j] && a[i + 1][j] == 1) {
+      vis[i][j] = 1;
+      findPathHelper(i + 1, j, a, n, ans, move + 'D', vis);
+      vis[i][j] = 0;
+    }
+
+    // left
+    if (j - 1 >= 0 && !vis[i][j - 1] && a[i][j - 1] == 1) {
+      vis[i][j] = 1;
+      findPathHelper(i, j - 1, a, n, ans, move + 'L', vis);
+      vis[i][j] = 0;
+    }
+
+    // right 
+    if (j + 1 < n && !vis[i][j + 1] && a[i][j + 1] == 1) {
+      vis[i][j] = 1;
+      findPathHelper(i, j + 1, a, n, ans, move + 'R', vis);
+      vis[i][j] = 0;
+    }
+
+    // upward
+    if (i - 1 >= 0 && !vis[i - 1][j] && a[i - 1][j] == 1) {
+      vis[i][j] = 1;
+      findPathHelper(i - 1, j, a, n, ans, move + 'U', vis);
+      vis[i][j] = 0;
+    }
+
+  }
+  public:
+    vector < string > findPath(vector < vector < int >> & m, int n) {
+      vector < string > ans;
+      vector < vector < int >> vis(n, vector < int > (n, 0));
+
+      if (m[0][0] == 1) findPathHelper(0, 0, m, n, ans, "", vis);
+      return ans;
+    }
+};
+
+int main() {
+  int n = 4;
+
+   vector < vector < int >> m = {{1,0,0,0},{1,1,0,1},{1,1,0,0},{0,1,1,1}};
+
+  Solution obj;
+  vector < string > result = obj.findPath(m, n);
+  if (result.size() == 0)
+    cout << -1;
+  else
+    for (int i = 0; i < result.size(); i++) cout << result[i] << " ";
+  cout << endl;
+
+  return 0;
+}
